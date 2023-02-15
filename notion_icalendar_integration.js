@@ -20,8 +20,9 @@ const events = ical.sync.parseFile(fileName);
 
 // Loop through appointments and add them to Notion
 for (const event of Object.values(events)) {
-    if (event.start !== undefined && event.end !== undefined && event.summary !== undefined && event.description !== undefined) {
-        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), event.description)
+    if (event.start !== undefined && event.end !== undefined && event.summary !== undefined) {
+        let description = event.description !== undefined ? event.description : "";
+        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), description)
     }
 }
 
