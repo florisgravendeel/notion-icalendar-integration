@@ -16,7 +16,7 @@ const databaseId = NOTION_DATABASE_ID
 
 
 // Use the sync function parseFile() to parse calendar.ics file
-const events = ical.sync.parseFile('calendar.ics');
+const events = ical.sync.parseFile(process.argv[4]);
 
 // Loop through appointments and add them to Notion
 for (const event of Object.values(events)) {
