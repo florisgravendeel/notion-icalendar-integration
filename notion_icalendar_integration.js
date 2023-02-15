@@ -21,16 +21,20 @@ const events = ical.sync.parseFile(fileName);
 // Loop through appointments and add them to Notion
 for (const event of Object.values(events)) {
     if (event.start !== undefined && event.end !== undefined && event.summary !== undefined) {
-        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString())
+        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), "testtest")
     }
 }
 
 
-async function addAppointment(text, date_start, date_end) {
+async function addAppointment(title, date_start, date_end, description) {
     try {
         const response = await notion.pages.create({
             parent: {
                 database_id: databaseId,
+            },
+            icon: {
+                "type": "emoji",
+                "emoji": "🥬"
             },
             properties: {
                 Name: {
@@ -39,7 +43,7 @@ async function addAppointment(text, date_start, date_end) {
                         {
                             type: 'text',
                             text: {
-                                content: text,
+                                content: title,
                             },
                         },
                     ],
@@ -50,7 +54,47 @@ async function addAppointment(text, date_start, date_end) {
                         "end": date_end
                     }
                 },
+                Description: {
+                    "rich_text": [
+                        {
+                            "text": {
+                                "content": description
+                            }
+                        }
+                    ]
+                },
             },
+            children: [
+                {
+                    "object": "block",
+                    "heading_2": {
+                        "rich_text": [
+                            {
+                                "text": {
+                                    "content": "Lacinato kale"
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "object": "block",
+                    "paragraph": {
+                        "rich_text": [
+                            {
+                                "text": {
+                                    "content": "Lacinato kale is a variety of kale with a long tradition in Italian cuisine, especially that of Tuscany. It is also known as Tuscan kale, Italian kale, dinosaur kale, kale, flat back kale, palm tree kale, or black Tuscan palm.",
+                                    "link": {
+                                        "url": "https://en.wikipedia.org/wiki/Lacinato_kale"
+                                    }
+                                },
+                                "href": "https://en.wikipedia.org/wiki/Lacinato_kale"
+                            }
+                        ],
+                        "color": "default"
+                    }
+                }
+            ]
         });
         console.log(response)
         console.log("Success! Entry added.")
