@@ -22,16 +22,47 @@ const events = ical.sync.parseFile(fileName);
 for (const event of Object.values(events)) {
     if (event.start !== undefined && event.end !== undefined && event.summary !== undefined) {
         let description = event.description !== undefined ? event.description : "";
-        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), description)
+        let emoij = "🎮";
+        switch (event.summary) {
+            case "Game Programming":
+                emoij = "👾";
+                break;
+            case "Math and Physics":
+                emoij = "🚀";
+                break;
+            case "Storytelling":
+                emoij = "📚";
+                break;
+            case "Concept Art":
+                emoij = "🎨"
+                break;
+            case "Level and Sound Design":
+                emoij = "💥"
+                break;
+            case "3D and Animation":
+                emoij = "🐯"
+                break;
+            case "Artifical Intelligence":
+                emoij = "🤖"
+                break;
+            case "Effect and Shaders":
+                emoij = "🌊"
+                break;
+        }
+        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), description, emoij)
     }
 }
 
 
-async function addAppointment(title, date_start, date_end, description) {
+async function addAppointment(title, date_start, date_end, description, emoji) {
     try {
         const response = await notion.pages.create({
             parent: {
                 database_id: databaseId,
+            },
+            icon: {
+                "type": "emoji",
+                "emoji": emoji
             },
             properties: {
                 Name: {
@@ -51,6 +82,11 @@ async function addAppointment(title, date_start, date_end, description) {
                         "end": date_end
                     }
                 },
+                Tag: {
+                    "select": {
+                        "name": "Game Development Courses"
+                    }
+                }
             },
             children: [
                 {
