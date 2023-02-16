@@ -1,5 +1,6 @@
 import { Client } from "@notionhq/client"
 import ical from "node-ical";
+import dayjs from "dayjs";
 
 if (process.argv.length !== 5){
 
@@ -49,7 +50,15 @@ for (const event of Object.values(events)) {
                 emoij = "🌊"
                 break;
         }
-        addAppointment(event.summary, event.start.toISOString(), event.end.toISOString(), description, emoij)
+        event.start.setHours(event.start.getHours()+1);
+        var start = event.start.toISOString().substring(0, event.start.toISOString().length-5);
+        start += "+01:00"
+
+        event.end.setHours(event.end.getHours()+1);
+        var end = event.end.toISOString().substring(0, event.end.toISOString().length-5);
+        end += "+01:00"
+
+        addAppointment(event.summary, start, end, description, emoij)
     }
 }
 
